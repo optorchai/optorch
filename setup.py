@@ -1,0 +1,52 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="optorch",
+    version="0.1.0",
+    description="Lightweight, modular, event-driven AI orchestration framework",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    author="Chris Churchill",
+    author_email="chris@serva.co.uk",
+    license="Proprietary",
+    classifiers=[
+        "License :: Other/Proprietary License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+    ],
+    url="https://github.com/crismc/optorch",
+    package_dir={"optorch": "."},
+    packages=["optorch"] + ["optorch." + p for p in find_packages(exclude=["*.egg-info", "*.egg-info.*"])],
+    install_requires=[
+        "pydantic",
+        "pydantic-settings",
+        "python-dotenv",
+        "pyyaml",
+        "openai",
+        "groq",
+        "httpx",
+        "aiohttp",
+        "aiocache[redis,msgpack]>=0.12.0",
+        "redis",
+        "databases[postgresql]>=0.8.0",
+        "asyncpg",
+        "aiosqlite",
+        "prometheus-client>=0.19.0",
+        "watchdog>=3.0.0",
+        "psutil>=5.9.0",
+        "casbin>=1.36.0",
+    ],
+    extras_require={
+        "mcp": [
+            "mcp",
+        ],
+        "embeddings": [
+            "chromadb>=0.4.0",
+            "qdrant-client>=1.7.0",
+            "sentence-transformers>=2.2.0",
+        ],
+    },
+    python_requires=">=3.11",
+)

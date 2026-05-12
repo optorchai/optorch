@@ -1,0 +1,11 @@
+class EventTypes:
+    LLM = "llm"
+    NODE = "node"
+    TOOL = "tool"
+    LIFECYCLE = "lifecycle"
+    TRANSFORMER = "transformer"
+    HISTORY = "history"
+    MESSAGE = "message"
+    SUGGESTIONS = "suggestions"
+    ERROR = "error"
+    CONFIG = "config"
