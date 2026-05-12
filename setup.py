@@ -26,6 +26,7 @@ setup(
         "pyyaml",
         "openai",
         "groq",
+        "anthropic",
         "httpx",
         "aiohttp",
         "aiocache[redis,msgpack]>=0.12.0",

@@ -400,7 +400,7 @@ LLM clients are defined in config and pooled in the `LLMRegistry`. Each named en
 | OpenAI    | `openai`         | GPT-4o, GPT-4-turbo, o1, etc.        |
 | Groq      | `groq`           | Llama 3, Mixtral, Gemma — ultra-fast |
 | Ollama    | `ollama`         | Local models — no API key required   |
-| Anthropic | `anthropic`      | Claude — via `anthropic` pip package |
+| Anthropic | `anthropic`      | Claude 3.5/3/4 — `pip install anthropic` required |
 
 #### Configuration
 
@@ -439,6 +439,15 @@ llms:
     presence_penalty: 0.3
     stop: ["###", "END"]
     completion_type: sentence # streaming budget: hard_stop | sentence | paragraph | min_tokens
+
+  # Anthropic — system messages extracted automatically, tools converted from OpenAI schema format
+  claude:
+    provider: anthropic
+    model: claude-3-5-sonnet-20241022
+    key_prefix: ANTHROPIC_API_KEY
+    temperature: 0.5
+    max_tokens: 4096          # required by Anthropic API — defaults to 4096 if omitted
+    streaming: false
 ```
 
 #### LLM Pools

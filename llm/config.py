@@ -111,6 +111,7 @@ class LLMClientConfig(BaseModel):
             "openai": "OpenAIClient",
             "groq": "GroqClient",
             "ollama": "OllamaClient",
+            "anthropic": "AnthropicClient",
         },
         description="Provider name to client class mappings"
     )
