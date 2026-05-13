@@ -258,7 +258,7 @@ class IdentityPackageInitializer:
             logger.warning("default_user missing password - skipping")
             return
         
-        password = config_manager.get_secret(password_key, "admin123")
+        password = user_config.get("password") or "admin1234567"
         
         try:
             from optorch.identity.authentication.providers.builtin.user_manager import UserManager
@@ -273,30 +273,34 @@ class IdentityPackageInitializer:
                 password_manager=password_mgr
             )
             
-            org_id = "default-org"
+            org_name = user_config.get("organization", "Default Organization")
+            org_id: int
             try:
-                org = await identity.storage.query("identity.get_organization", organization_id=org_id)
-                if not org:
-                    await identity.storage.query(
+                orgs = await identity.storage.query("identity.list_organizations") or []
+                match = next((o for o in orgs if (o.get("name") if isinstance(o, dict) else getattr(o, "name", None)) == org_name), None)
+                if match:
+                    org_id = match["id"] if isinstance(match, dict) else match.id
+                else:
+                    org = await identity.storage.query(
                         "identity.create_organization",
-                        organization_id=org_id,
-                        name="Default Organization",
-                        description="Auto-created default organization",
-                        status="active"
+                        name=org_name,
+                        status="active",
                     )
-                    logger.info(f"✅ created default organization: {org_id}")
+                    org_id = org.id if hasattr(org, "id") else org["id"]
+                    logger.info(f"✅ created default organization: {org_name} (id={org_id})")
             except Exception as org_err:
-                logger.warning(f"could not verify/create organization: {org_err}")
+                logger.error(f"could not verify/create organization: {org_err}", exc_info=True)
+                return
             
             # create individual
             full_name = f"{user_config.get('given_name', 'Admin')} {user_config.get('family_name', 'User')}"
-            individual = await user_manager.create_individual(
+            await user_manager.create_individual(
                 email=email,
                 name=full_name,
                 organization_id=org_id,
                 password=password,
-                roles=["admin"],
-                send_invite=False  # skip invite email for bootstrap
+                roles=[user_config.get("role", "admin")],
+                send_invite=False
             )
             
             logger.info(f"✅ created default user: {email}")

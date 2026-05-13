@@ -192,3 +192,19 @@ CREATE TRIGGER node_registry_updated_at
 COMMENT ON TABLE node_registry IS 'Static node configuration, updated on app startup';
 COMMENT ON COLUMN node_registry.execution_order IS 'Depth in execution tree (0=entry nodes)';
 COMMENT ON COLUMN node_registry.parent_nodes IS 'Array of node names that can route to this node';
+
+CREATE TABLE IF NOT EXISTS prompts (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    version TEXT NOT NULL,
+    content TEXT NOT NULL,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(name, version)
+);
+
+CREATE INDEX IF NOT EXISTS idx_prompts_name ON prompts(name);
+CREATE INDEX IF NOT EXISTS idx_prompts_name_created ON prompts(name, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_prompts_version ON prompts(version);
+
+COMMENT ON TABLE prompts IS 'Versioned prompt registry for evaluation, A/B testing, evolution';

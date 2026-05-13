@@ -34,8 +34,8 @@ class StorageConfig(BaseModel):
     )
     
     store: str = Field(
-        default="timescale",
-        description="storage backend type: timescale, sqlite, mysql"
+        default="sqlite",
+        description="storage backend type: sqlite, timescale, mysql"
     )
     connection_string: str = Field(
         default="sqlite:///data/optorch.db",

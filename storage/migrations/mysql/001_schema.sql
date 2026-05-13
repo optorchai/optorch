@@ -147,3 +147,17 @@ CREATE TABLE IF NOT EXISTS node_registry (
     INDEX idx_node_registry_execution_order (execution_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Static node configuration, updated on app startup';
+
+CREATE TABLE IF NOT EXISTS prompts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    version VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    metadata JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_name_version (name, version),
+    INDEX idx_prompts_name (name),
+    INDEX idx_prompts_name_created (name, created_at DESC),
+    INDEX idx_prompts_version (version)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Versioned prompt registry for evaluation, A/B testing, evolution';

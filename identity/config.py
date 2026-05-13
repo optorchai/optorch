@@ -45,7 +45,7 @@ class AuthorizationConfig(BaseModel):
     """authorization configuration"""
     provider: Literal["casbin", "opa", "xacml", "memory"] = Field(default="casbin")
     default_decision: Literal["Permit", "Deny"] = Field(default="Deny")
-    casbin_model_path: str = Field(default="config/casbin/model.conf")
+    casbin_model_path: Optional[str] = Field(default=None, description="override path to casbin model.conf; defaults to builtin RBAC model")
 
 
 class AuthenticationConfig(BaseModel):

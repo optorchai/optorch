@@ -19,6 +19,8 @@ setup(
     url="https://github.com/crismc/optorch",
     package_dir={"optorch": "."},
     packages=["optorch"] + ["optorch." + p for p in find_packages(exclude=["*.egg-info", "*.egg-info.*"])],
+    include_package_data=True,
+    package_data={"optorch": ["identity/authorization/providers/*.conf"]},
     install_requires=[
         "pydantic",
         "pydantic-settings",
@@ -38,11 +40,17 @@ setup(
         "watchdog>=3.0.0",
         "psutil>=5.9.0",
         "casbin>=1.36.0",
+        "mcp",
+        "watchfiles>=0.21.0",
+        "argon2-cffi",
+        "bcrypt",
+        "cryptography",
+        "Authlib",
+        "PyJWT",
+        "oauthlib",
+        "requests-oauthlib",
     ],
     extras_require={
-        "mcp": [
-            "mcp",
-        ],
         "embeddings": [
             "chromadb>=0.4.0",
             "qdrant-client>=1.7.0",

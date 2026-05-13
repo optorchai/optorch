@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Callable
+from uuid import uuid4
 from pydantic import BaseModel, Field
 
 
 class TransportProbeRequest(BaseModel):
     """probe request for transport health checks"""
-    probe_id: str = Field(description="unique probe identifier")
+    probe_id: str = Field(default_factory=lambda: uuid4().hex, description="unique probe identifier")
     timeout: float = Field(default=5.0, description="max wait time in seconds")
     source: str = Field(default="unknown", description="identifier of the source making the probe")
 

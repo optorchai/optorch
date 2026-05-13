@@ -1,6 +1,7 @@
 """Casbin authorization provider"""
 
 from datetime import datetime, UTC
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Any
 
 from optorch.identity.authorization.provider import AuthorizationProvider
@@ -167,7 +168,8 @@ class CasbinProvider(AuthorizationProvider):
                 details={"import_error": str(e)}
             ) from e
 
-        self.model_path = config.get("model_path", "config/casbin/rbac_model.conf")
+        builtin_model = str(Path(__file__).parent / "rbac_model.conf")
+        self.model_path = config.get("model_path") or builtin_model
         self.constraint_registry = constraint_registry
         self.storage = storage_manager
         

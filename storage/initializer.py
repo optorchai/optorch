@@ -37,10 +37,7 @@ class StoragePackageInitializer:
         config_manager.register_config("storage", StorageConfig)
         logger.info("✅ storage config model registered")
         
-        raw_storage_config = config.get("storage")
-        if not raw_storage_config:
-            logger.info("storage package not configured - skipping")
-            return None
+        raw_storage_config = config.get("storage") or {}
         
         connection_string_key = raw_storage_config.get("connection_string")
         if connection_string_key:

@@ -75,7 +75,7 @@ class SaveNodeConfigQuery(BaseQuery):
             "intents": json.dumps(intents) if intents else None,
             "metadata": json.dumps(metadata) if metadata else None,
             "execution_order": execution_order,
-            "parent_nodes": parent_nodes
+            "parent_nodes": json.dumps(parent_nodes) if parent_nodes else None
         }
         
         await self.store.execute(query, values)

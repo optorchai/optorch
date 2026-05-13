@@ -77,7 +77,7 @@ class AuthorizationProviderRegistry(Registry[type[AuthorizationProvider]]):
         if "config" in params:
             config_dict: dict[str, Any]
             if provider_type == "casbin":
-                config_dict = {"model_path": getattr(config, "casbin_model_path", "config/casbin/rbac_model.conf")}
+                config_dict = {"model_path": getattr(config, "casbin_model_path", None)}
             elif isinstance(config, dict):
                 config_dict = config
             elif hasattr(config, "model_dump"):

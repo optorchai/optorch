@@ -154,3 +154,17 @@ CREATE TRIGGER IF NOT EXISTS node_registry_updated_at
 BEGIN
     UPDATE node_registry SET updated_at = datetime('now') WHERE node_name = NEW.node_name;
 END;
+
+CREATE TABLE IF NOT EXISTS prompts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    version TEXT NOT NULL,
+    content TEXT NOT NULL,
+    metadata TEXT DEFAULT '{}',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(name, version)
+);
+
+CREATE INDEX IF NOT EXISTS idx_prompts_name ON prompts(name);
+CREATE INDEX IF NOT EXISTS idx_prompts_name_created ON prompts(name, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_prompts_version ON prompts(version);
