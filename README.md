@@ -80,7 +80,7 @@ pip install optorch[all]         # everything
 From source:
 
 ```bash
-git clone git@github.com:crismc/optorch.git
+git clone git@github.com:optorchai/optorch.git
 cd optorch
 pip install -e .
 ```

@@ -16,7 +16,7 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
     ],
-    url="https://github.com/crismc/optorch",
+    url="https://github.com/optorchai/optorch",
     package_dir={"optorch": "."},
     packages=["optorch"] + ["optorch." + p for p in find_packages(exclude=["*.egg-info", "*.egg-info.*"])],
     include_package_data=True,
