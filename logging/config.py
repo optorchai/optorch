@@ -65,6 +65,7 @@ class LogsConfig(BaseModel):
             "asyncio": "WARNING",
             "databases": "WARNING",
             "watchfiles": "WARNING",
+            "aiosqlite": "WARNING",
         },
         description="Per-package log level overrides. Defaults silence noisy libraries."
     )
