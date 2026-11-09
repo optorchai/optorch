@@ -84,13 +84,13 @@ class EventEmitter:
         event = {"type": event_type, "timestamp": time.time(), **tenant_ctx, **(data or {})}
 
         if "organization_id" not in event:
-            try:
-                from optorch.identity.context import IdentityContext
-                org_id = IdentityContext.get_ambient_org_id()
-            except Exception:
-                org_id = None
+            org_id = tenant_ctx.get("client_id")
 
-            if org_id is not None:
+            if not org_id:
+                from optorch.identity.context import IdentityContext
+                org_id = IdentityContext.get_org_id()
+                
+            if org_id:
                 event["organization_id"] = org_id
 
         if "session_id" not in event:

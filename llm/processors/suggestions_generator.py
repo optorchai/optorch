@@ -106,7 +106,7 @@ class SuggestionsGenerator(BaseLLMProcessor):
                 },
                 state=suggestions_state,
                 event_emitter=context.events, 
-                node_context=context.node_context
+                node_context=None
             )
             
             content = response.content

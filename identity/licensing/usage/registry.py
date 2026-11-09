@@ -85,8 +85,9 @@ class UsageTrackerRegistry:
         provider_class = self._providers.get(config.type)
         
         type_config: Optional[BaseUsageTrackerConfig] = None
-        if config.type == "memory" and config.memory:
-            type_config = config.memory
+        if config.type == "memory":
+            from optorch.identity.licensing.usage.config import MemoryUsageTrackerConfig
+            type_config = config.memory or MemoryUsageTrackerConfig()
         elif config.type == "redis" and config.redis:
             type_config = config.redis
         elif config.type == "storage" and config.storage:

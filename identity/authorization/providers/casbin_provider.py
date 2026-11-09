@@ -227,17 +227,13 @@ class CasbinProvider(AuthorizationProvider):
     ) -> bool:
         """ABAC evaluation using constraint registry"""
         if not self.constraint_registry:
-            current_hour = environment.get("time", datetime.now()).hour
-            if current_hour < 9 or current_hour > 17:
-                return False
-
             if subject.get("org_id") != resource.get("org_id"):
                 return False
 
             return True
         
         from optorch.identity.authorization.constraints.models import (ConstraintContext, SubjectContext, ResourceContext, EnvironmentContext)
-        from optorch.identity.authorization.constraints.config import ConstraintConfig, TimeConstraintConfig, ResourceConstraintConfig
+        from optorch.identity.authorization.constraints.config import ConstraintConfig, ResourceConstraintConfig
         
         context = ConstraintContext(
             subject=SubjectContext(user_id=subject.get("user_id", ""), org_id=subject.get("org_id"), roles=subject.get("roles", [])),
@@ -247,7 +243,6 @@ class CasbinProvider(AuthorizationProvider):
         )
         
         constraints = [
-            ConstraintConfig(type="time", time=TimeConstraintConfig(start_hour=9, end_hour=17)),
             ConstraintConfig(type="resource", resource=ResourceConstraintConfig(require_same_org=True))
         ]
         

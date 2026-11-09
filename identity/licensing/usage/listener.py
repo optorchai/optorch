@@ -26,10 +26,21 @@ class UsageTrackingListener(BaseListener):
         self.usage_manager = usage_manager
         self.needs_initialization = False
     
+    TRACKED_EVENTS = {
+        f"{EventTypes.NODE}.complete",
+        f"{EventTypes.TOOL}.complete",
+        f"{EventTypes.LLM}.complete",
+        "api.request",
+        "http.request",
+    }
+
     def on_event(self, event: Dict[str, Any]):
         """increment usage counters based on event type"""
         event_type = event.get("type", "")
-        
+
+        if event_type not in self.TRACKED_EVENTS:
+            return
+
         org_id = self._get_org_id(event)
         if not org_id:
             return

@@ -48,6 +48,9 @@ class ConversationHistory:
 
         return conversation, messages
 
+    async def get_events(self, session_id: str, limit: int = 500) -> List[Dict[str, Any]]:
+        return await self._storage.query("get_session_events", session_id=session_id, limit=limit)
+
     async def delete(self, session_id: str) -> None:
         await self._storage.query("delete_conversation", session_id=session_id)
 

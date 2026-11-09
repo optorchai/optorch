@@ -261,28 +261,26 @@ class StorageManager:
         
         filtered_kwargs = kwargs
         
-        # tenant filtering: explicit override > ambient context
+        # tenant filtering
         if self.config.tenant_filter and self.config.tenant_filter.enabled:
             org_id = None
             
-            # 1. explicit override via parameter
             if _identity_context:
                 org_id = _identity_context.get_current_org_id()
-                logger.debug(f"tenant filter: explicit override org_id={org_id}")
+                logger.debug(f"tenant filter: org_id={org_id}")
             
-            # 2. ambient context (request-scoped via contextvars)
             else:
                 from optorch.identity.context import IdentityContext
-                org_id = IdentityContext.get_ambient_org_id()
+                org_id = IdentityContext.get_org_id()
                 if org_id:
-                    logger.debug(f"tenant filter: ambient context org_id={org_id} query={query_name}")
+                    logger.debug(f"tenant filter: org_id={org_id} query={query_name}")
             
             # inject organization_id if available and not excluded
             if org_id and not self._is_query_excluded(query_name):
                 from optorch.storage.tenant_filter import TenantFilter
                 tenant_filter = TenantFilter(self.config.tenant_filter)
                 filtered_kwargs = tenant_filter.inject(query_name, kwargs, org_id)
-        
+
         store = self.store
         
         async def execute_query():
@@ -349,18 +347,3 @@ class StorageManager:
             self.config.tenant_filter.enabled = False
         logger.info("tenant filtering disabled")
     
-    def verify_org_access(self, org_id: str) -> bool:
-        """verify current user has access to specified organization - deprecated
-        
-        use identity_context.get_current_org_id() == org_id instead
-        
-        args:
-            org_id: organization ID to check
-        
-        returns:
-            True if user has access, False otherwise
-        """
-        logger.warning("verify_org_access() deprecated - check IdentityContext.get_ambient_org_id() directly")
-        from optorch.identity.context import IdentityContext
-        current_org = IdentityContext.get_ambient_org_id()
-        return current_org == org_id if current_org else False

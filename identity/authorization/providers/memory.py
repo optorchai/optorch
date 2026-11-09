@@ -30,7 +30,9 @@ class MemoryProvider(AuthorizationProvider):
             "admin": [{"resource": "*", "action": "*"}],
             "user": [
                 {"resource": "workflow", "action": "execute"},
-                {"resource": "data", "action": "read"}
+                {"resource": "data", "action": "read"},
+                {"resource": "session", "action": "read"},
+                {"resource": "session", "action": "delete"},
             ],
             "viewer": [{"resource": "*", "action": "read"}]
         }

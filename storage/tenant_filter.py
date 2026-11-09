@@ -22,34 +22,35 @@ class TenantFilterConfig(BaseModel):
     # False: WHERE organization_id = :org_id (strict tenant isolation)
     include_global_data: bool = False  # default to strict isolation
     
-    # tables that dont need tenant filtering (handle their own or are global)
     excluded_tables: Set[str] = Field(default_factory=lambda: {
-        "individuals",  # users exist across orgs
-        "organizations",  # org table itself
+        "individuals",
+        "organizations",
         "migrations",
         "jwt_keys",
         "revoked_tokens",
-        "sessions",  # session has no org column
-        "optorch_config"  # config queries handle tenant logic themselves
+        "sessions",
+        "optorch_config"
     })
     
-    # queries explicitly excluded from filtering (handle their own tenant logic)
     excluded_queries: Set[str] = Field(default_factory=lambda: {
         "identity.get_individual",
         "identity.get_individual_by_email",
         "identity.list_individuals",
         "identity.create_individual",
-        "identity.get_organization",  # org queries handle their own filtering
+        "identity.get_organization",
         "identity.list_organizations",
         "identity.create_organization",
-        "get_config",  # config queries handle tenant logic themselves
+        "get_config",
         "save_config",
         "list_configs",
-        "get_config_timestamp"
+        "get_config_timestamp",
+        "get_conversation",
+        "get_session_messages",
+        "get_session_events",
+        "delete_conversation"
     })
     
     # queries that should include global data even when include_global_data=False
-    # useful for analytics, shared templates, public resources
     always_include_global: Set[str] = Field(default_factory=set)
     
     class Config:
@@ -89,7 +90,7 @@ class TenantFilter:
     def inject(self, query_name: str, params: Dict[str, Any], org_id: Optional[str] = None) -> Dict[str, Any]:
         """inject organization_id into query params if needed
         
-        reads org_id from: explicit param > ambient contextvars
+        reads org_id from: explicit param > contextvars
         
         controls global data visibility via _include_global marker:
         - include_global_data=True: queries should use (org_id = :org_id OR org_id IS NULL)
@@ -99,7 +100,7 @@ class TenantFilter:
         args:
             query_name: identity.list_audit_logs, identity.list_teams, etc
             params: original query params
-            org_id: explicit organization_id (bypasses ambient context)
+            org_id: explicit organization_id (bypasses context)
         
         returns:
             params with organization_id injected if applicable
@@ -110,10 +111,9 @@ class TenantFilter:
         if not self._should_filter(query_name, params):
             return params
         
-        # get org_id: explicit param > ambient context
         if not org_id:
             from optorch.identity.context import IdentityContext
-            org_id = IdentityContext.get_ambient_org_id()
+            org_id = IdentityContext.get_org_id()
         
         if not org_id:
             msg = f"tenant filter enabled but no org_id in context for query: {query_name}"

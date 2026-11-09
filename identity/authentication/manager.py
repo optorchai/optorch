@@ -217,7 +217,8 @@ class AuthenticationManager:
                 if self.event_emitter:
                     self.event_emitter.emit("authentication.success", {
                         "provider": provider_name,
-                        "user_id": result.individual.id if result.individual else None
+                        "user_id": result.individual.id if result.individual else None,
+                        "organization_id": result.individual.current_org_id if result.individual else None,
                     })
                 
                 if result.individual:

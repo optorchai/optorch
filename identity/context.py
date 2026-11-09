@@ -44,9 +44,6 @@ class IdentityContext:
         _current_org_id.set(None)
     
     @staticmethod
-    def get_ambient_org_id() -> Optional[str]:
-        """get ambient org_id from contextvars without instance
-        
-        allows storage layer to read context without IdentityContext instance
-        """
+    def get_org_id() -> Optional[str]:
+        """get org_id from contextvars without instance"""
         return _current_org_id.get()

@@ -4,6 +4,7 @@ from optorch.llm.capabilities.capability import Capability
 class OpenAIReasoning(Capability):    
     provider: ClassVar[str] = "openai"
     name: ClassVar[str] = "reasoning"
+    accumulation_key: ClassVar[str] = "reasoning"
     
     DEFAULT_EFFORT: ClassVar[str] = "medium"
     DEFAULT_SUMMARY: ClassVar[str] = "detailed"

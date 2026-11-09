@@ -4,6 +4,7 @@ from optorch.llm.capabilities.capability import Capability
 class OllamaReasoning(Capability):    
     provider: ClassVar[str] = "ollama"
     name: ClassVar[str] = "reasoning"
+    accumulation_key: ClassVar[str] = "reasoning"
     
     def contribute(self, model: str) -> Optional[Dict[str, Any]]:
         return {"think": True}
